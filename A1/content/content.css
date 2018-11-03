@@ -1,0 +1,113 @@
+a, p, div, span, article, table, tr, td, thead, tbody {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 145%;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+.hidden {
+    display: unset;
+}
+
+#content {
+    margin: 100px 100px auto auto;
+    padding: 20px;
+    width: 90%;
+}
+
+article {
+    border: 2px solid gray;
+    border-top: 2px solid green;
+    text-align: justify;
+    column-gap: 25px;
+    padding: 5px;
+    column-count: 3;
+}
+
+@media screen and (max-width: 320px) {
+    article {
+        column-count: 1;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    article {
+        column-count: 2;
+    }
+}
+
+article p {
+    margin-top: 0;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table th {
+    padding: 6px;
+    border-bottom: 4px solid #dddddd;
+}
+
+table tbody tr:nth-child(2n) {
+    background-color: #dddddd;
+}
+
+#showhide {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#showhide * {
+    display: inline-block;
+    margin: 3px;
+}
+
+#showhide a {
+    color: dodgerblue;
+    text-decoration: underline;
+}
+
+#showhide a.hidden {
+    color: darkgray;
+}
+
+#showhide a:hover {
+    text-decoration: none;
+}
+
+footer {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-top: 2px solid green;
+}
+
+footer div {
+    display: inline-block;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+    text-align: right;
+}
+
+.fa {
+    padding: 3px;
+}
+
+.fa.active {
+    color: greenyellow;
+}
+
+.fa:hover {
+    color: greenyellow;
+}
