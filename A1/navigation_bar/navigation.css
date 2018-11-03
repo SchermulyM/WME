@@ -136,11 +136,3 @@ header nav {
     background-color: var(--bar-color3);
   }
 }
-
-.rest_of_page {
-  padding-top: var(--nav-line-height);
-  background-image: linear-gradient(lightblue, white);
-  max-width: var(--global-max-width);
-  margin:auto;
-  height: 1200px;
-}
