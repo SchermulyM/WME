@@ -35,7 +35,7 @@ article {
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) and (min-width: 321px) {
     article {
         column-count: 2;
     }
