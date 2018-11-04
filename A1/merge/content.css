@@ -29,6 +29,15 @@ article {
     column-count: 3;
 }
 
+article a {
+    color: #31d83a;
+}
+
+article a:hover {
+    color: darkgreen;
+    text-decoration: none;
+}
+
 @media screen and (max-width: 320px) {
     article {
         column-count: 1;
