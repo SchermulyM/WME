@@ -33,11 +33,23 @@ article {
     article {
         column-count: 1;
     }
+
+    table * tr td:last-child, table * tr th:last-child {
+        display: none;
+    }
+
+    table * tr td:nth-last-child(2), table * tr th:nth-last-child(2) {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 768px) and (min-width: 321px) {
     article {
         column-count: 2;
+    }
+
+    table * tr td:last-child, table * tr th:last-child {
+        display: none;
     }
 }
 
