@@ -89,8 +89,17 @@ function sortClick(callee, order, table) {
 
     const sorted_rows = Array.from(rows);
     sorted_rows.sort((a, b) => {
-        const x = a.children[index].innerText;
-        const y = b.children[index].innerText;
+        let x = a.children[index].innerText;
+        let y = b.children[index].innerText;
+
+        const intX = parseFloat(x);
+        const intY = parseFloat(y);
+
+        if (!isNaN(intX) && !isNaN(intY)) {
+            x = intX;
+            y = intY;
+        }
+
         if (x === y) {
             return 0;
         } else {
