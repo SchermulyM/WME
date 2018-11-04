@@ -1,0 +1,14 @@
+<table id="table">
+    <thead>
+    <tr>
+        {% for i, col in enumerate(data[0]) %}<th class="col_{{ i + 1 }}">{{ col }}</th>
+        {% endfor %}</tr>
+    </thead>
+    <tbody>
+        {% for row in data[1:] %}<tr>
+            {% for i, col in enumerate(row) %}<td class="col_{{ i + 1}}">{{ col }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
