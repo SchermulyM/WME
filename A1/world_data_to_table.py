@@ -8,7 +8,7 @@ with open("world_data_v1.csv", encoding="UTF-8") as file:
 
     for row in reader:
         row = tuple(map(lambda x: x.strip(), row))
-        data.append(row)
+        data.append(row[:7])
 
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(""))
 template = env.get_template("world_data_template.html")
