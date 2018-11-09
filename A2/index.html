@@ -13,6 +13,20 @@
           rel='stylesheet' type='text/css'>
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="style.css" type="text/css" rel="stylesheet">
+
+    <script>
+        /** enables loading of table without a full page reload, not technically part of our task */
+        function loadTable() {
+            const request = new XMLHttpRequest();
+            request.onload = () => {
+                const table = request.responseText;
+                const wrapper = document.getElementById("table_wrapper");
+                wrapper.innerHTML = table;
+            };
+            request.open("GET", "api/print.php");
+            request.send();
+        }
+    </script>
 </head>
 
 <body>
@@ -34,6 +48,9 @@
                 <a href="print.php"><i class="fa fa-list-ul"></i>A2 - Print</a>
             </li>
             <li>
+                <a href="#" onclick="loadTable(); return false;"><i class="fa fa-list-ul"></i>A2 - Print (AJAX)</a>
+            </li>
+            <li>
                 <a href=""><i class="fa fa-list-ul"></i>A3 - REST</a>
             </li>
             <li>
@@ -48,39 +65,41 @@
     <section>
         <h1>World Data Overview ... </h1>
 
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Country</th>
-                <th>Attribute 1</th>
-                <th>Attribute 2</th>
-                <th>Attribute 3</th>
-                <th>Attribute 4</th>
-                <th>Attribute 5</th>
-            </tr>
-            </thead>
-            <tbody id="table_body">
-            <tr>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-            </tr>
-            <tr>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-            </tr>
-            </tbody>
-        </table>
+        <div id="table_wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Country</th>
+                    <th>Attribute 1</th>
+                    <th>Attribute 2</th>
+                    <th>Attribute 3</th>
+                    <th>Attribute 4</th>
+                    <th>Attribute 5</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                <tr>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                </tr>
+                <tr>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                    <td>Dummy</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
     </section>
 </div>
