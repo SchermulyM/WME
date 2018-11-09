@@ -2,7 +2,18 @@
 
     <xsl:template match="/">
         <table>
-            <tbody>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Country</th>
+                    <th>Birth Rate / 1000</th>
+                    <th>Cell Phones / 100</th>
+                    <th>Children / Woman</th>
+                    <th>Electricity Cons. / Capita</th>
+                    <th>GDP / Capita</th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
                 <xsl:for-each select="Countries/Country">
                     <tr>
                         <td>
@@ -12,7 +23,7 @@
                             <xsl:value-of select="name"/>
                         </td>
                         <td>
-                            <xsl:value-of select="birth_rate_per_100"/>
+                            <xsl:value-of select="birth_rate_per_1000"/>
                         </td>
                         <td>
                             <xsl:value-of select="cell_phones_per_100"/>
