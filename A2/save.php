@@ -1,5 +1,4 @@
 <?php
-
 require "world_data_parser.php";
 $parser = new WorldDataParser();
 $output_path = "world_data.csv";

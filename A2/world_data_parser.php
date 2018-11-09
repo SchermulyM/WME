@@ -46,7 +46,15 @@ class WorldDataParser
         }
     }
 
-    function printXML($xml_file_path, $xslt_stylesheet_path) {
-        
+    function printXML($xml_file_path, $xslt_stylesheet_path)
+    {
+        $xml_file = new DOMDocument();
+        $xml_file->load($xml_file_path);
+        $xslt_stylesheet = new DOMDocument();
+        $xslt_stylesheet->load($xslt_stylesheet_path);
+
+        $processor = new XSLTProcessor();
+        $processor->importStylesheet($xslt_stylesheet);
+        return $processor->transformToXml($xml_file);
     }
 }
