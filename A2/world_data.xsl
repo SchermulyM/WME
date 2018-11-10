@@ -29,7 +29,7 @@
         <td class="col_3"><xsl:value-of select="format-number(birth_rate_per_1000, '#.##')"/></td>
         <td class="col_4"><xsl:value-of select="format-number(cell_phones_per_100, '#.##')"/></td>
         <td class="col_5"><xsl:value-of select="format-number(children_per_woman, '#.##')"/></td>
-        <td class="col_7"><xsl:value-of select="format-number(electricity_consumption_per_capita, '#.##')"/></td>
+        <td class="col_6"><xsl:value-of select="format-number(electricity_consumption_per_capita, '#.##')"/></td>
         <td class="col_7"><xsl:value-of select="format-number(gdp_per_capita, '#.##')"/></td>
         <td class="col_8"><xsl:value-of select="format-number(gdp_per_capita_growth, '#.##')"/></td>
         <td class="col_9"><xsl:value-of select="format-number(inflation_annual, '#.##')"/></td>

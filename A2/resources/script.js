@@ -1,6 +1,7 @@
 window.onload = function () {
     console.log("hello world");
-    populateShowHideMenu();
+    const generatedLinks = populateShowHideMenu();
+    hideLastColumns(generatedLinks, 7);
     addSortingFeature();
 
     document.getElementById("navbutton").onclick = toggleNavigation;
@@ -9,10 +10,19 @@ window.onload = function () {
     };
 };
 
+function hideLastColumns(showHideLinks, howManyToShow) {
+    for (let i = howManyToShow; i < showHideLinks.length; i++) {
+        showHideLinks[i].click();
+    }
+}
+
+/** creates show/hide <a> tags for every table column*/
 function populateShowHideMenu() {
     const menu = document.getElementById("showhide");
     const menu_ul = menu.getElementsByTagName("ul")[0];
     const table = document.getElementById("table");
+
+    const generatedLinks = [];
 
     let count = 0;
 
@@ -30,9 +40,12 @@ function populateShowHideMenu() {
         a.onclick = () => {
             hideColumn(a, table, colclass)
         };
+        generatedLinks.push(a);
         link_li.appendChild(a);
         menu_ul.appendChild(link_li);
     }
+
+    return generatedLinks;
 }
 
 function hideColumn(callee, table, column) {
