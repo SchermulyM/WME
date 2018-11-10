@@ -43,14 +43,15 @@ class WorldDataParser{
 	}
 
 	function printXML($xml_file, $xsl_file){
-		$xslDoc = new DOMDocument();
+		$xslDoc = new DOMDocument("1.0", "UTF-8");
     $xslDoc->load($xsl_file);
 
-    $xmlDoc = new DOMDocument();
+    $xmlDoc = new DOMDocument("1.0", "UTF-8");
     $xmlDoc->load($xml_file);
 
     $proc = new XSLTProcessor();
     $proc->importStylesheet($xslDoc);
-    return $proc->transformToXML($xmlDoc);
+    $proc = $proc->transformToXML($xmlDoc);
+		return $proc;
 	}
 }

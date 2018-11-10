@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="xml" omit-xml-declaration="yes" />
 <xsl:template match="/">
-<html>
-<body>
-  <table id="table" border="1">
+  <table id="table">
     <thead>
-      <tr bgcolor="#9acd32">
+      <tr>
         <th class="col_1" >id</th>
         <th class="col_2" >country</th>
         <th class="col_3" >birth rate per 1000</th>
@@ -43,7 +42,5 @@
       </xsl:for-each>
     </tbody>
   </table>
-</body>
-</html>
 </xsl:template>
 </xsl:stylesheet>
