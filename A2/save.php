@@ -1,3 +1,4 @@
+<a href="index.php"> RETURN </a>
 <?php
 
   require 'world_data_parser.php';

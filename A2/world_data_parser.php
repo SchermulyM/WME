@@ -42,7 +42,15 @@ class WorldDataParser{
 		return boolval($ret);
 	}
 
-	function printXML($xml_provider, $xslt_stylesheet){
-		return array("awesome http from xml");
+	function printXML($xml_file, $xsl_file){
+		$xslDoc = new DOMDocument();
+    $xslDoc->load($xsl_file);
+
+    $xmlDoc = new DOMDocument();
+    $xmlDoc->load($xml_file);
+
+    $proc = new XSLTProcessor();
+    $proc->importStylesheet($xslDoc);
+    return $proc->transformToXML($xmlDoc);
 	}
 }
