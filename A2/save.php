@@ -5,6 +5,8 @@
 
   $wdp = new WorldDataParser();
   $csv = $wdp -> parseCSV('world_data.csv');
-
-  echo '<pre>'; print_r($wdp -> saveXML($csv)); echo '</pre>';
+  $success = $wdp -> saveXML($csv);
+  echo "<p>";
+  echo $success ? "Successfully wrote the file!" : "Failed to write the file :(";
+  echo "</p>";
 ?>
