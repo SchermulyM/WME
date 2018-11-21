@@ -8,21 +8,21 @@ var bodyParser = require('body-parser');
 var Converter = require("csvtojson").Converter;
 
 //register body-parser to handle json from res / req
-app.use( bodyParser.json() );
+app.use(bodyParser.json());
 
 //register public dir to serve static files (html, css, js)
-app.use( express.static( path.join(__dirname, "public") ) );
+app.use(express.static(path.join(__dirname, "public")));
 
 // END DO NOT CHANGE!
 
 
 /**************************************************************************
-****************************** csv2json *********************************
-**************************************************************************/
+ ****************************** csv2json *********************************
+ **************************************************************************/
 
 /**************************************************************************
-********************** handle HTTP METHODS ***********************
-**************************************************************************/
+ ********************** handle HTTP METHODS ***********************
+ **************************************************************************/
 
 
 // DO NOT CHANGE!
