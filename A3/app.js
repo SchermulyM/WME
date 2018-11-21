@@ -20,6 +20,36 @@ app.use(express.static(path.join(__dirname, "public")));
  ****************************** csv2json *********************************
  **************************************************************************/
 
+/*  need file system API to write files.
+    normally this would go to the top, but it says "DO NOT CHANGE!" soooo ... */
+const fs = require("fs");
+
+let csvData = {};
+
+/** read csv into json obj, which is stored globally */
+async function readCsv(path) {
+    csvData = await new Converter().fromFile(path);
+}
+
+/** write it to file, optional but why not ¯\_(ツ)_/¯ */
+async function writeJson(path) {
+    fs.writeFile(path, JSON.stringify(csvData, null, 4), error => {
+        if (error) {
+            console.log("couln't write file, it raised:", error)
+        } else {
+            console.log("wrote world_data.json");
+        }
+    });
+}
+
+/*  execute async functions sequentially, but need an async context to do so
+    this is an immediately invoked async lambda function expression, conjured with some ascii soup as is tradition */
+(async () => {
+    await readCsv("world_data.csv");
+    await writeJson("world_data.json");
+})();
+
+
 /**************************************************************************
  ********************** handle HTTP METHODS ***********************
  **************************************************************************/
