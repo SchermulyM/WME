@@ -54,6 +54,82 @@ async function writeJson(path) {
  ********************** handle HTTP METHODS ***********************
  **************************************************************************/
 
+// routing reference https://expressjs.com/en/guide/routing.html
+
+app.get("/items", (req, res) => {
+    console.log("sending all the data!");
+    res.send(csvData);
+});
+
+app.get("/items/:id", (req, res) => {
+    const id = req.params["id"];
+    console.log("sending only data for id:", id);
+    const item = csvData.find(x => x.id === id);
+    if (item === undefined) {
+        // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express
+        res.status(400).send(`No such id ${id} in database.`);
+    }
+    res.send(item);
+});
+
+app.get("/items/:id1/:id2", (req, res) => {
+    const id1 = req.params["id1"];
+    const id2 = req.params["id2"];
+    console.log("sending only data for ids between", id1, "and", id2);
+    const items = csvData.filter(x => id1 <= x.id && x.id < id2);
+    console.log(items);
+    res.send(items);
+});
+
+app.get("/properties", (req, res) => {
+    const first = csvData[0];
+    const keys = Object.keys(first);
+    res.send(keys);
+});
+
+app.get("/properties/:num", (req, res) => {
+    const first = csvData[0];
+    const keys = Object.keys(first);
+    const numberOfProperty = req.params["num"];
+    const property = keys[numberOfProperty];
+    if (property === undefined) {
+        // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express
+        res.status(400).send("No such property available.");
+    } else {
+        res.send(property);
+    }
+});
+
+app.post("/items", (req, res) => {
+    const name = req.body.name;
+    const lastId = csvData.length > 0 ? csvData[csvData.length - 1].id : 0;
+    const newId = (parseInt(lastId) + 1).toString().padStart(3, "0");
+    const newObj = {id: newId, name: name};
+    console.log("generated new object:", newObj);
+    csvData.push(newObj);
+    res.status(200).send(`Added country ${name} to list!`)
+});
+
+app.delete("/items", (req, res) => {
+    if (csvData.length > 0) {
+        const country = csvData.pop();
+        res.status(200).send(`Deleted last country: ${country.name}`);
+    } else {
+        res.status(400).send("No country left to delete.");
+    }
+});
+
+app.delete("/items/:id", (req, res) => {
+    const id = req.params.id;
+    const country = csvData.find(x => x.id === id);
+    if (country === undefined) {
+        res.status(400).send(`No such id ${id} in database.`)
+    } else {
+        csvData = csvData.filter(x => x !== country);
+        res.send(`Item ${id} deleted successfully.`);
+    }
+});
+
 
 // DO NOT CHANGE!
 // bind server to port
