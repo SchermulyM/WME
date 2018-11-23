@@ -28,7 +28,7 @@ let csvData = {};
 
 /** read csv into json obj, which is stored globally */
 async function readCsv(path) {
-    csvData = await new Converter().fromFile(path);
+    csvData = await new Converter({checkType: true}).fromFile(path);
 }
 
 /** write it to file, optional but why not ¯\_(ツ)_/¯ */
@@ -57,14 +57,12 @@ async function writeJson(path) {
 // routing reference https://expressjs.com/en/guide/routing.html
 
 app.get("/items", (req, res) => {
-    console.log("sending all the data!");
     res.send(csvData);
 });
 
 app.get("/items/:id", (req, res) => {
     const id = req.params["id"];
-    console.log("sending only data for id:", id);
-    const item = csvData.find(x => x.id === id);
+    const item = csvData.find(x => x.id === parseInt(id));
     if (item === undefined) {
         // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express
         res.status(400).send(`No such id ${id} in database.`);
@@ -75,8 +73,7 @@ app.get("/items/:id", (req, res) => {
 app.get("/items/:id1/:id2", (req, res) => {
     const id1 = req.params["id1"];
     const id2 = req.params["id2"];
-    console.log("sending only data for ids between", id1, "and", id2);
-    const items = csvData.filter(x => id1 <= x.id && x.id < id2);
+    const items = csvData.filter(x => parseInt(id1) <= x.id && x.id <= parseInt(id2));
     console.log(items);
     res.send(items);
 });
@@ -102,8 +99,7 @@ app.get("/properties/:num", (req, res) => {
 
 app.post("/items", (req, res) => {
     const name = req.body.name;
-    const lastId = csvData.length > 0 ? csvData[csvData.length - 1].id : 0;
-    const newId = (parseInt(lastId) + 1).toString().padStart(3, "0");
+    const newId = csvData.length === 0 ? 0 : Math.max.apply(null, csvData.map(x => x.id)) + 1;
     const newObj = {id: newId, name: name};
     console.log("generated new object:", newObj);
     csvData.push(newObj);
