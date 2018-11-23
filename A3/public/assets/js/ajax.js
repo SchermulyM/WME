@@ -93,4 +93,13 @@ $(() => {
             data: JSON.stringify(data)
         }).always(giveRequestFeedback("POST"));
     });
+
+    $("#country_delete").submit(event => {
+        event.preventDefault();
+        const id = $("#country_delete_id").val();
+        $.ajax({
+            url: `/items/${id}`,
+            type: "DELETE",
+        }).always(giveRequestFeedback("DELETE"));
+    });
 });

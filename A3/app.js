@@ -121,7 +121,7 @@ app.delete("/items", (req, res) => {
 
 app.delete("/items/:id", (req, res) => {
     const id = req.params.id;
-    const country = csvData.find(x => x.id === id);
+    const country = csvData.find(x => x.id === parseInt(id));
     if (country === undefined) {
         res.status(400).send(`No such id ${id} in database.`)
     } else {
