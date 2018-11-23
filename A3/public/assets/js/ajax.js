@@ -1,13 +1,17 @@
-function giveRequestFeedback(arg1, arg2, arg3) {
-    const requestObj = (typeof arg3).toLowerCase() === "string" ? arg1 : arg3;
-    const statusMessage = requestObj.status === 200 ? "success" : requestObj.responseText;
-    giveRequestFeedbackSaneArguments(requestObj.status, statusMessage);
+function giveRequestFeedback(requestType) {
+    return (arg1, arg2, arg3) => {
+        const requestObj = (typeof arg3).toLowerCase() === "string" ? arg1 : arg3;
+        const statusMessage = requestObj.status === 200 ? "success" : requestObj.responseText;
+        console.log(requestType, requestObj);
+        giveRequestFeedbackSaneArguments(requestObj.status, statusMessage, requestType);
+    }
 }
 
-function giveRequestFeedbackSaneArguments(statusCode, statusMessage) {
+function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType) {
     const statusClass = statusCode === 200 ? "success" : "failure";
     const tr = `<tr class="${statusClass}">
         <td>${new Date()}</td>
+        <td>${requestType}</td>
         <td>${statusCode}</td>
         <td>${statusMessage}</td>
     </tr>`;
@@ -41,12 +45,12 @@ $(() => {
             const optionsHtml = data.map(d => `<option>${d}</option>`).join("");
             $("#prop_selection").html(optionsHtml);
         },
-    }).always(giveRequestFeedback);
+    }).always(giveRequestFeedback("GET"));
 
     $.ajax({
         url: "/items",
         success: populateTable
-    }).always(giveRequestFeedback);
+    }).always(giveRequestFeedback("GET"));
 
     $("#delete_request_history").click(() => {
         $("#request_status_table tbody").html("");
@@ -71,6 +75,22 @@ $(() => {
         $.ajax({
             url: url,
             success: populateTable
-        }).always(giveRequestFeedback);
+        }).always(giveRequestFeedback("GET"));
+    });
+
+    $("#country_add").submit(event => {
+        event.preventDefault();
+        const data = {
+            name: $("#country_name").val(),
+            birth_rate_per_1000: $("#country_birth").val(),
+            cell_phones_per_100: $("#country_cellphone").val()
+        };
+        $.ajax({
+            url: "/items",
+            type: "POST",
+            contentType: "application/json",
+            processData: true,
+            data: JSON.stringify(data)
+        }).always(giveRequestFeedback("POST"));
     });
 });

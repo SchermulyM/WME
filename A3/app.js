@@ -98,12 +98,16 @@ app.get("/properties/:num", (req, res) => {
 });
 
 app.post("/items", (req, res) => {
-    const name = req.body.name;
     const newId = csvData.length === 0 ? 0 : Math.max.apply(null, csvData.map(x => x.id)) + 1;
-    const newObj = {id: newId, name: name};
-    console.log("generated new object:", newObj);
-    csvData.push(newObj);
-    res.status(200).send(`Added country ${name} to list!`)
+    const newCountry = {
+        id: newId,
+        name: req.body.name.toString(),
+        birth_rate_per_1000: parseFloat(req.body.birth_rate_per_1000),
+        cell_phones_per_100: parseFloat(req.body.cell_phones_per_100)
+    };
+    console.log("generated new object:", newCountry);
+    csvData.push(newCountry);
+    res.status(200).send(`Added country ${newCountry.name} to list!`)
 });
 
 app.delete("/items", (req, res) => {
