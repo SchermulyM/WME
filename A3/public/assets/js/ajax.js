@@ -1,8 +1,15 @@
 /** stores whether requestAll or requestFiltered was called last, so the post/delete requests can refresh the table */
 let lastRequestFunction = null;
-let csvProperties = {};
 
+/** holds properties of csv, retrieved from /properties
+ *  contains elements with attributes name, prettyName, shown
+ *  @name:          same identifier that was submitted by /properties ans is used in /items return values
+ *  @prettyName:    based on @name, but replaced underscores with whitespace and "per" with slashes.
+ *                  "birth_per_1000" becomes "birth / 1000"
+ *  @shown:         whether the property should be shown in the table or not */
+let csvProperties = [];
 
+/** intended to be used as $.ajax(...).always() */
 function giveRequestFeedback(requestType) {
     return (arg1, arg2, arg3) => {
         const requestObj = (typeof arg3).toLowerCase() === "string" ? arg1 : arg3;
@@ -13,6 +20,7 @@ function giveRequestFeedback(requestType) {
 
 }
 
+/** populates request feedback table */
 function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType) {
     const statusClass = statusCode === 200 ? "success" : "failure";
     const tr = `<tr class="${statusClass}">
@@ -24,6 +32,7 @@ function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType
     $("#request_status_table tbody").append(tr);
 }
 
+/** populates main table with csv data received from get requests */
 function populateTable(array) {
     if (!Array.isArray(array)) {
         array = [array];
@@ -40,7 +49,7 @@ function populateTable(array) {
     applyShowHide();
 }
 
-
+/** get request without any filters, then update tables */
 function requestAll() {
     $.ajax({
         url: "/items",
@@ -49,6 +58,7 @@ function requestAll() {
     lastRequestFunction = requestAll;
 }
 
+/** get request with id filtered by range */
 function requestFiltered() {
     const id = $("#country_filter_id").val().replace(/\s+/g, "");
     const idRange = $("#country_filter_range").val().replace(/\s+/g, "");
@@ -76,16 +86,19 @@ function requestFiltered() {
     lastRequestFunction = requestFiltered;
 }
 
+/** turns "birth_per_1000" into "birth / 1000" for nicer table headings*/
 function prettifyCsvHeader(name) {
     const withoutWs = name.replace(/_/g, " ");
     return withoutWs.replace("per", "/");
 }
 
+/** rounds numeric table cells to @digits */
 function formatTableCell(content, digits) {
     const x = Math.pow(10, digits);
     return isNaN(content) ? content : Math.round(content * x) / x;
 }
 
+/** shows or hides table columns based on global variable csvProperties */
 function applyShowHide() {
     for (let i = 0; i < csvProperties.length; i++) {
         const targetState = csvProperties[i].shown;
