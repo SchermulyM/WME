@@ -91,7 +91,7 @@ $(() => {
         $("#request_status_table tbody").html("");
     });
 
-    $("#hide_request_history").click(event => {
+    $("#hide_request_history").click(() => {
         $("#request_status_container").toggle(500, () => {
             const visible = $("#request_status_container").is(":visible");
             $("#hide_request_history").text(visible ? "(hide request history)" : "(show request history)");
