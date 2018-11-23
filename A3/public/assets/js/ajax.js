@@ -1,5 +1,6 @@
 /** stores whether requestAll or requestFiltered was called last, so the post/delete requests can refresh the table */
 let lastRequestFunction = null;
+let csvProperties = {};
 
 
 function giveRequestFeedback(requestType) {
@@ -21,29 +22,24 @@ function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType
         <td>${statusMessage}</td>
     </tr>`;
     $("#request_status_table tbody").append(tr);
-
 }
 
 function populateTable(array) {
     if (!Array.isArray(array)) {
         array = [array];
     }
+    const header = csvProperties.map(property => `<th>${property.prettyName}</th>`);
     const rows = array.map(country => {
-        return `
-        <tr>
-            <td>${country.id}</td>
-            <td>${country.name}</td>
-            <td>${country.birth_rate_per_1000}</td>
-            <td>${country.cell_phones_per_100}</td>
-            <td>${country.children_per_woman}</td>
-            <td>${country.electricity_consumption_per_capita}</td>
-            <td>${country.internet_user_per_100}</td>
-        </tr>`;
+        const tds = csvProperties.map(property => `<td>${formatTableCell(country[property.name], 2)}</td>`).join("");
+        return `<tr>${tds}</tr>`;
     });
+    const thead = header.join("");
     const tbody = rows.join("");
+    $("#table_head").html(thead);
     $("#table_body").html(tbody);
-
+    applyShowHide();
 }
+
 
 function requestAll() {
     $.ajax({
@@ -61,9 +57,13 @@ function requestFiltered() {
         const range = idRange.match(/(\w+)-(\w+)/);
         const lower = range[1];
         const upper = range[2];
-        url += `${lower}/${upper}`;
+        url +=
+            `${lower}/${upper}`
+        ;
     } else {
-        url += `${id}`;
+        url +=
+            `${id}`
+        ;
 
     }
 
@@ -76,11 +76,42 @@ function requestFiltered() {
     lastRequestFunction = requestFiltered;
 }
 
+function prettifyCsvHeader(name) {
+    const withoutWs = name.replace(/_/g, " ");
+    return withoutWs.replace("per", "/");
+}
+
+function formatTableCell(content, digits) {
+    const x = Math.pow(10, digits);
+    return isNaN(content) ? content : Math.round(content * x) / x;
+}
+
+function applyShowHide() {
+    for (let i = 0; i < csvProperties.length; i++) {
+        const targetState = csvProperties[i].shown;
+        const cells = $(`#table tr :nth-child(${i + 1})`);
+        console.log(targetState, cells);
+        cells.toggle(targetState);
+    }
+}
+
 $(() => {
     $.ajax({
         url: "/properties",
         success: data => {
-            const optionsHtml = data.map(d => `<option>${d}</option>`).join("");
+            csvProperties = data.map(d => {
+                return {
+                    name: d,
+                    shown: false,
+                    prettyName: prettifyCsvHeader(d)
+                }
+            });
+            // on initial page load, only show first 7 columns
+            for (let i = 0; i < 7; i++) {
+                csvProperties[i].shown = true;
+            }
+            const optionsHtml = data.map(d =>
+                `<option>${d}</option>`).join("");
             $("#prop_selection").html(optionsHtml);
         },
     }).always(giveRequestFeedback("GET"));
@@ -128,5 +159,21 @@ $(() => {
             type: "DELETE",
             success: lastRequestFunction()
         }).always(giveRequestFeedback("DELETE"));
+    });
+
+    $("#show_selected_prop").click(event => {
+        event.preventDefault();
+        const prop = $("#prop_selection").val();
+        csvProperties.find(x => x.name === prop)["shown"] = true;
+        console.log(csvProperties);
+        applyShowHide();
+    });
+
+    $("#hide_selected_prop").click(event => {
+        event.preventDefault();
+        const prop = $("#prop_selection").val();
+        csvProperties.find(x => x.name === prop)["shown"] = false;
+        console.log(csvProperties);
+        applyShowHide();
     });
 });
