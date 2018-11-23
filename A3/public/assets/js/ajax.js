@@ -1,3 +1,7 @@
+/** stores whether requestAll or requestFiltered was called last, so the post/delete requests can refresh the table */
+let lastRequestFunction = null;
+
+
 function giveRequestFeedback(requestType) {
     return (arg1, arg2, arg3) => {
         const requestObj = (typeof arg3).toLowerCase() === "string" ? arg1 : arg3;
@@ -5,6 +9,7 @@ function giveRequestFeedback(requestType) {
         console.log(requestType, requestObj);
         giveRequestFeedbackSaneArguments(requestObj.status, statusMessage, requestType);
     }
+
 }
 
 function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType) {
@@ -16,6 +21,7 @@ function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType
         <td>${statusMessage}</td>
     </tr>`;
     $("#request_status_table tbody").append(tr);
+
 }
 
 function populateTable(array) {
@@ -36,6 +42,38 @@ function populateTable(array) {
     });
     const tbody = rows.join("");
     $("#table_body").html(tbody);
+
+}
+
+function requestAll() {
+    $.ajax({
+        url: "/items",
+        success: populateTable
+    }).always(giveRequestFeedback("GET"));
+    lastRequestFunction = requestAll;
+}
+
+function requestFiltered() {
+    const id = $("#country_filter_id").val().replace(/\s+/g, "");
+    const idRange = $("#country_filter_range").val().replace(/\s+/g, "");
+    let url = "/items/";
+    if (idRange) {
+        const range = idRange.match(/(\w+)-(\w+)/);
+        const lower = range[1];
+        const upper = range[2];
+        url += `${lower}/${upper}`;
+    } else {
+        url += `${id}`;
+
+    }
+
+    console.log(url);
+    $.ajax({
+        url: url,
+        success: populateTable
+    }).always(giveRequestFeedback("GET"));
+
+    lastRequestFunction = requestFiltered;
 }
 
 $(() => {
@@ -47,35 +85,22 @@ $(() => {
         },
     }).always(giveRequestFeedback("GET"));
 
-    $.ajax({
-        url: "/items",
-        success: populateTable
-    }).always(giveRequestFeedback("GET"));
+    requestAll();
 
     $("#delete_request_history").click(() => {
         $("#request_status_table tbody").html("");
     });
 
+    $("#hide_request_history").click(event => {
+        $("#request_status_container").toggle(500, () => {
+            const visible = $("#request_status_container").is(":visible");
+            $("#hide_request_history").text(visible ? "(hide request history)" : "(show request history)");
+        });
+    });
+
     $("#country_filter").submit(event => {
         event.preventDefault();
-        const id = $("#country_filter_id").val().replace(/\s+/g, "");
-        const idRange = $("#country_filter_range").val().replace(/\s+/g, "");
-        let url = "/items/";
-        if (idRange) {
-            const range = idRange.match(/(\w+)-(\w+)/);
-            const lower = range[1];
-            const upper = range[2];
-            url += `${lower}/${upper}`;
-        } else {
-            url += `${id}`;
-        }
-
-        console.log(url);
-
-        $.ajax({
-            url: url,
-            success: populateTable
-        }).always(giveRequestFeedback("GET"));
+        requestFiltered();
     });
 
     $("#country_add").submit(event => {
@@ -90,7 +115,8 @@ $(() => {
             type: "POST",
             contentType: "application/json",
             processData: true,
-            data: JSON.stringify(data)
+            data: JSON.stringify(data),
+            success: lastRequestFunction()
         }).always(giveRequestFeedback("POST"));
     });
 
@@ -100,6 +126,7 @@ $(() => {
         $.ajax({
             url: `/items/${id}`,
             type: "DELETE",
+            success: lastRequestFunction()
         }).always(giveRequestFeedback("DELETE"));
     });
 });
