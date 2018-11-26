@@ -10,22 +10,23 @@ let lastRequestFunction = null;
 let csvProperties = [];
 
 /** intended to be used as $.ajax(...).always() */
-function giveRequestFeedback(requestType) {
+function giveRequestFeedback(requestType, targetUrl) {
     return (arg1, arg2, arg3) => {
         const requestObj = (typeof arg3).toLowerCase() === "string" ? arg1 : arg3;
         const statusMessage = requestObj.status === 200 ? "success" : requestObj.responseText;
         // console.log(requestType, requestObj);
-        giveRequestFeedbackSaneArguments(requestObj.status, statusMessage, requestType);
+        giveRequestFeedbackSaneArguments(requestObj.status, statusMessage, requestType, targetUrl);
     }
 
 }
 
 /** populates request feedback table */
-function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType) {
+function giveRequestFeedbackSaneArguments(statusCode, statusMessage, requestType, targetUrl) {
     const statusClass = statusCode === 200 ? "success" : "failure";
     const tr = `<tr class="${statusClass}">
         <td>${new Date()}</td>
         <td>${requestType}</td>
+        <td>${targetUrl}</td>
         <td>${statusCode}</td>
         <td>${statusMessage}</td>
     </tr>`;
@@ -51,10 +52,11 @@ function populateTable(array) {
 
 /** get request without any filters, then update tables */
 function requestAll() {
+    const url = "/items";
     $.ajax({
-        url: "/items",
+        url: url,
         success: populateTable
-    }).always(giveRequestFeedback("GET"));
+    }).always(giveRequestFeedback("GET", url));
     lastRequestFunction = requestAll;
 }
 
@@ -81,7 +83,7 @@ function requestFiltered() {
     $.ajax({
         url: url,
         success: populateTable
-    }).always(giveRequestFeedback("GET"));
+    }).always(giveRequestFeedback("GET", url));
 
     lastRequestFunction = requestFiltered;
 }
@@ -127,7 +129,7 @@ $(() => {
                 `<option>${d}</option>`).join("");
             $("#prop_selection").html(optionsHtml);
         },
-    }).always(giveRequestFeedback("GET"));
+    }).always(giveRequestFeedback("GET", "/properties"));
 
     requestAll();
 
@@ -154,24 +156,26 @@ $(() => {
             birth_rate_per_1000: $("#country_birth").val(),
             cell_phones_per_100: $("#country_cellphone").val()
         };
+        const url = "/items";
         $.ajax({
-            url: "/items",
+            url: url,
             type: "POST",
             contentType: "application/json",
             processData: true,
             data: JSON.stringify(data),
             success: lastRequestFunction()
-        }).always(giveRequestFeedback("POST"));
+        }).always(giveRequestFeedback("POST", url));
     });
 
     $("#country_delete").submit(event => {
         event.preventDefault();
         const id = $("#country_delete_id").val();
+        const url = `/items/${id}`;
         $.ajax({
-            url: `/items/${id}`,
+            url: url,
             type: "DELETE",
             success: lastRequestFunction()
-        }).always(giveRequestFeedback("DELETE"));
+        }).always(giveRequestFeedback("DELETE", url));
     });
 
     $("#show_selected_prop").click(event => {
