@@ -179,7 +179,7 @@ $(() => {
         const prop = $("#prop_selection").val();
         csvProperties.find(x => x.name === prop)["shown"] = true;
         console.log(csvProperties);
-        applyShowHide();
+        lastRequestFunction();
     });
 
     $("#hide_selected_prop").click(event => {
@@ -187,6 +187,6 @@ $(() => {
         const prop = $("#prop_selection").val();
         csvProperties.find(x => x.name === prop)["shown"] = false;
         console.log(csvProperties);
-        applyShowHide();
+        lastRequestFunction();
     });
 });
