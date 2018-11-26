@@ -14,7 +14,7 @@ function giveRequestFeedback(requestType) {
     return (arg1, arg2, arg3) => {
         const requestObj = (typeof arg3).toLowerCase() === "string" ? arg1 : arg3;
         const statusMessage = requestObj.status === 200 ? "success" : requestObj.responseText;
-        console.log(requestType, requestObj);
+        // console.log(requestType, requestObj);
         giveRequestFeedbackSaneArguments(requestObj.status, statusMessage, requestType);
     }
 
@@ -77,7 +77,7 @@ function requestFiltered() {
 
     }
 
-    console.log(url);
+    // console.log(url);
     $.ajax({
         url: url,
         success: populateTable
@@ -103,7 +103,7 @@ function applyShowHide() {
     for (let i = 0; i < csvProperties.length; i++) {
         const targetState = csvProperties[i].shown;
         const cells = $(`#table tr :nth-child(${i + 1})`);
-        console.log(targetState, cells);
+        // console.log(targetState, cells);
         cells.toggle(targetState);
     }
 }
@@ -178,7 +178,7 @@ $(() => {
         event.preventDefault();
         const prop = $("#prop_selection").val();
         csvProperties.find(x => x.name === prop)["shown"] = true;
-        console.log(csvProperties);
+        // console.log(csvProperties);
         lastRequestFunction();
     });
 
@@ -186,7 +186,7 @@ $(() => {
         event.preventDefault();
         const prop = $("#prop_selection").val();
         csvProperties.find(x => x.name === prop)["shown"] = false;
-        console.log(csvProperties);
+        // console.log(csvProperties);
         lastRequestFunction();
     });
 });
