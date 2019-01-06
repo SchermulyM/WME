@@ -20,6 +20,15 @@ function mapmarker_evtlistener(country){
   console.log(country)
 }
 
+const mapMarkers = {};
+
+function highlightOnMap(countryId) {
+    const marker = mapMarkers[countryId];
+    if (marker) {
+        marker.openPopup();
+    }
+}
+
 $(() => {
 
     const mapObject = L.map('mapid').setView([20, 0], 2);
@@ -39,6 +48,7 @@ $(() => {
                 marker.on("mouseover", function(){marker.openPopup(); mapmarker_evtlistener(country.name)});
                 marker.on("mouseout", function(){marker.closePopup(); mapmarker_evtlistener(country.name)});
                 marker.addTo(mapObject);
+                mapMarkers[country.id] = marker;
             }
         }
     });

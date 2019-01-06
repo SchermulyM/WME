@@ -6,10 +6,10 @@
 // https://bl.ocks.org/mbostock/3808218
 // https://bl.ocks.org/syncopika/f1c9036b0deb058454f825238a95b6be
 
-
 //evt listener
-function bar_evtlistener(e){
-  console.log(e.__data__.name)
+function bar_evtlistener(e) {
+    const country = e.__data__;
+    highlightOnMap(country.id);
 }
 
 // selection box
