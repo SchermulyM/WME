@@ -21,28 +21,20 @@ const select2 = $("#chart2_select");
 select2.on("change", () => {
   $.ajax({url: '/items', success: data => {update_barchart(data, "#chart2", select2.val())}});
 });
+
 $.ajax({
-  url: "/properties",
-  success: (data) => {
-    select1.innerHTML = "";
-    for (const d of data){
-      if (d === "name") {continue;}
-      select1.append('<option>'+d+'</option>');
+    url: "/properties",
+    success: data => {
+        const properties = data.filter(it => it !== "id" && it !== "name");
+        for (const select of [select1, select2]) {
+            select.innerHTML = "";
+            for (const property of properties) {
+                select.append(`<option>${property}</option>`);
+            }
+            select.change();
+        }
     }
-    //select1.change();
-  }
-})
-$.ajax({
-  url: "/properties",
-  success: (data) => {
-    select2.innerHTML = "";
-    for (const d of data){
-      if (d === "name") {continue;}
-      select2.append('<option>'+d+'</option>');
-    }
-    //select2.change();
-  }
-})
+});
 
 var margin = { top: 20, right: 20, bottom: 30, left: 20 },
     width = 500,
