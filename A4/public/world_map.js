@@ -1,29 +1,8 @@
 
-var mymap = L.map('mapid').setView([20, 0], 2);
-
-var points = [
-    ["ZANZIBAR",-6.13, 39.31],
-    ["TOKYO",35.68, 139.76],
-    ["AUCKLAND",-36.85, 174.78],
-    ["BANGKOK",13.75, 100.48],
-    ["DELHI",29.01, 77.38],
-    ["SINGAPORE",1.36, 103.75],
-    ["BRASILIA",-15.67, -47.43],
-    ["RIO DE JANEIRO",-22.9, -43.24],
-    ["TORONTO",43.64, -79.4],
-    ["EASTER ISLAND",-27.11, -109.36],
-    ["SEATTLE",47.61, -122.33],
-    ["LONDON",51.5072, -0.1275]
-    ];
-
+// var mymap = L.map('mapid').setView([20, 0], 2);
 
 // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(mymap);
 
-var CartoDB_VoyagerNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-	subdomains: 'abcd',
-	maxZoom: 19
-});
 
 // var Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
 // 	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -34,13 +13,37 @@ var CartoDB_VoyagerNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/ras
 // });
 
 //Stamen_Watercolor.addTo(mymap)
+//
+// CartoDB_VoyagerNoLabels.addTo(mymap)
 
-CartoDB_VoyagerNoLabels.addTo(mymap)
+function mapmarker_evtlistener(country){
+  console.log(country)
+}
 
-L.marker([51.5, -0.09]).addTo(mymap)
-	.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+$(() => {
 
-var popup = L.popup();
+    const mapObject = L.map('mapid').setView([20, 0], 2);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+      	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        minZoom: 1,
+      	maxZoom: 19
+    }).addTo(mapObject);
+
+    $.ajax({
+        url: "/items",
+        success: (data) => {
+            for (const country of data) {
+                const marker = L.marker([country.gps_lat, country.gps_long], {id: country.name});
+                marker.bindPopup(country.name);
+                marker.on("mouseover", function(){marker.openPopup(); mapmarker_evtlistener(country.name)});
+                marker.on("mouseout", function(){marker.closePopup(); mapmarker_evtlistener(country.name)});
+                marker.addTo(mapObject);
+            }
+        }
+    });
+
+});
 
 // function onMapClick(e) {
 // 	popup

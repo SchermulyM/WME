@@ -12,15 +12,14 @@ function bar_evtlistener(e){
   console.log(e.__data__.name)
 }
 
-
 // selection box
 const select1 = $("#chart1_select");
 select1.on("change", () => {
-  update_barchart(csvData, "#chart1", select1.val());
+  $.ajax({url: '/items', success: data => {update_barchart(data, "#chart1", select1.val())}});
 });
 const select2 = $("#chart2_select");
 select2.on("change", () => {
-  update_barchart(csvData, "#chart2", select2.val());
+  $.ajax({url: '/items', success: data => {update_barchart(data, "#chart2", select2.val())}});
 });
 $.ajax({
   url: "/properties",
@@ -140,8 +139,9 @@ function update_barchart(data, chart_id, property_name) {
    .remove();
 }
 
-init_barchart(csvData, "#chart1")
-init_barchart(csvData, "#chart2")
+$.ajax({url: '/items', success: data => {init_barchart(data, "#chart1"); init_barchart(data, "#chart2")}})
+// init_barchart(csvData, "#chart1")
+// init_barchart(csvData, "#chart2")
 
 // update_barchart(csvData, "#chart1", "birth_rate_per_1000")
 // update_barchart(csvData, "#chart2", "children_per_woman")
