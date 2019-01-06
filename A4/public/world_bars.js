@@ -9,8 +9,9 @@
 let globalSvgs = [];
 
 //evt listener
-function bar_evtlistener(e) {
+function bar_evtlistener(e, enterOrLeave) {
     const country = e.__data__;
+    highlightBar(country.id, enterOrLeave === "enter");
     highlightOnMap(country.id);
 }
 
@@ -82,7 +83,8 @@ function init_barchart(data, chart_id){
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.id); })
         .attr("height", function(d) { return height - y(d.id); })
-        .attr("onmouseover", "bar_evtlistener(this)");
+        .attr("onmouseover", "bar_evtlistener(this, 'enter')")
+        .attr("onmouseout", "bar_evtlistener(this, 'leave')");
 
     // add the x Axis
     svg.append("g")
