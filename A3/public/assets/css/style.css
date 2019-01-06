@@ -356,6 +356,12 @@ footer > .container > div.right {
 	text-align: right;
 }
 
+#map-div {
+	width: 600px;
+	height: 600px;
+	display: inline-block;
+}
+
 /* Media Queries */
 
 /********************************************************
