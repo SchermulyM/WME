@@ -1,0 +1,17 @@
+{
+  "name": "TEAM_28",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TEAM_28",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "latest",
+    "csvtojson": "^2.0.8",
+    "express": "^4.16.4",
+    "jquery": "^3.3.1"
+  }
+}
