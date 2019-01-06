@@ -44,7 +44,17 @@ $(() => {
         success: (data) => {
             for (const country of data) {
                 const marker = L.marker([country.gps_lat, country.gps_long], {id: country.name});
-                marker.bindPopup(country.name);
+                const popupLines = [];
+                for (const key in country) {
+                    if (country.hasOwnProperty(key)) {
+                        const value = country[key];
+                        // const line = `${key} --- ${value}`;
+                        const line = `<span>${key}: ${value}</span><br>`;
+                        popupLines.push(line);
+                    }
+                }
+                const popupText = `<dl>${popupLines.slice(1, 4).join("")}</dl>`;
+                marker.bindPopup(popupText);
                 marker.on("mouseover", function () {
                     marker.openPopup();
                     mapmarker_evtlistener(country.id, "enter")
