@@ -6,10 +6,18 @@
 // https://bl.ocks.org/mbostock/3808218
 // https://bl.ocks.org/syncopika/f1c9036b0deb058454f825238a95b6be
 
+let globalSvgs = [];
+
 //evt listener
 function bar_evtlistener(e) {
     const country = e.__data__;
     highlightOnMap(country.id);
+}
+
+function highlightBar(countryId, show) {
+    for (const svg of globalSvgs) {
+        svg.selectAll(".bar").filter(data => data.id === countryId).classed("highlighted", show);
+    }
 }
 
 // selection box
@@ -58,6 +66,8 @@ function init_barchart(data, chart_id){
       .append("g")
         .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
+
+    globalSvgs.push(svg);
 
     // Scale the range of the data in the domains
     x.domain(data.map(function(d) { return d.name; }));

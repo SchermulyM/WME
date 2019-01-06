@@ -16,8 +16,8 @@
 //
 // CartoDB_VoyagerNoLabels.addTo(mymap)
 
-function mapmarker_evtlistener(country){
-  console.log(country)
+function mapmarker_evtlistener(countryId, enterOrLeave) {
+    highlightBar(countryId, enterOrLeave === "enter");
 }
 
 const mapMarkers = {};
@@ -45,14 +45,19 @@ $(() => {
             for (const country of data) {
                 const marker = L.marker([country.gps_lat, country.gps_long], {id: country.name});
                 marker.bindPopup(country.name);
-                marker.on("mouseover", function(){marker.openPopup(); mapmarker_evtlistener(country.name)});
-                marker.on("mouseout", function(){marker.closePopup(); mapmarker_evtlistener(country.name)});
+                marker.on("mouseover", function () {
+                    marker.openPopup();
+                    mapmarker_evtlistener(country.id, "enter")
+                });
+                marker.on("mouseout", function () {
+                    marker.closePopup();
+                    mapmarker_evtlistener(country.id, "leave")
+                });
                 marker.addTo(mapObject);
                 mapMarkers[country.id] = marker;
             }
         }
     });
-
 });
 
 // function onMapClick(e) {
