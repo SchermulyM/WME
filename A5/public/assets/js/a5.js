@@ -18,9 +18,8 @@ $(() => {
         generateMeshes();
     });
     animationLoop();
-    $("#radio-group li").change(() => {
-        generateMeshes();
-    });
+    $("#radio-group li").change(generateMeshes);
+    $("#check-adjust-value-range").change(generateMeshes);
 });
 
 function generateMeshes() {
@@ -34,8 +33,19 @@ function generateMeshes() {
     scene.add(light);
 
     const selectedAttribute = getSelectedAttribute();
+    const values = data.map(country => country[selectedAttribute]);
+    const maximumValue = Math.max.apply(null, values);
+    const minimumValue = Math.min.apply(null, values);
+    const valueRange = maximumValue - minimumValue;
+
     for (const country of data) {
-        const geometry = new THREE.BoxGeometry(10, country[selectedAttribute], 10);
+        let value = country[selectedAttribute];
+        if ($("#check-adjust-value-range").is(":checked")) {
+            value -= minimumValue;
+            value /= valueRange;
+            value *= 100;
+        }
+        const geometry = new THREE.BoxGeometry(10, value, 10);
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
         meshes.push([country, mesh, selectedAttribute]);
@@ -76,6 +86,7 @@ function initThree() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
     renderer = new THREE.WebGLRenderer({alpha: true, canvas: canvas});
+    camera.position.y = 10;
     camera.position.z = 300;
     scene.add(camera);
     renderer.setSize(canvas.width, canvas.height);
