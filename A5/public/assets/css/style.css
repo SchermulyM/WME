@@ -42,7 +42,7 @@ a:hover {
 	max-width: 100%;
 }
 
-div.container section {
+div.container section:first-child {
 	margin-top: 120px;
 }
 
