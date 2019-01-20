@@ -5,34 +5,58 @@ let scene;
 let camera;
 let renderer;
 
-const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-let meshes;
+const material = new THREE.MeshLambertMaterial({ color: 0xff0000, side: 2, shading: THREE.FlatShading });
+let light;
+let meshes = [];
 
 $(() => {
     canvas = $("#canvas-map")[0];
     initMappa();
     initThree();
-    myMap.onChange(() => {
-        while (scene.children.length > 0) {
-            scene.remove(scene.children[0]);
-        }
-        for (const d of data ? data : []) {
-            const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-            const mesh = new THREE.Mesh(geometry, material);
-            const pos = myMap.latLngToPixel(d.gps_lat, d.gps_long);
-            const vector = new THREE.Vector3();
-            vector.set((pos.x / canvas.width) * 2 - 1, -(pos.y / canvas.height) * 2 + 1, 0.5);
-            vector.unproject(camera);
-            const dir = vector.sub(camera.position).normalize();
-            const distance = -camera.position.z / dir.z;
-            const newPos = camera.position.clone().add(dir.multiplyScalar(distance));
-            mesh.position.set(newPos.x, newPos.y, newPos.z);
-            scene.add(mesh);
-        }
+    myMap.onChange(repositionMeshes);
+    updateData(() => {
+        generateMeshes();
     });
-    updateData();
     animationLoop();
+    $("#radio-group li").change(() => {
+        generateMeshes();
+    });
 });
+
+function generateMeshes() {
+    meshes.length = 0;
+    while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
+    }
+
+    light = new THREE.PointLight(0xffffff, 1.2);
+    light.position.set(50, 50, 50);
+    scene.add(light);
+
+    const selectedAttribute = getSelectedAttribute();
+    for (const country of data) {
+        const geometry = new THREE.BoxGeometry(10, country[selectedAttribute], 10);
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        meshes.push([country, mesh, selectedAttribute]);
+    }
+
+    repositionMeshes();
+}
+
+function repositionMeshes() {
+    for ([country, mesh, value] of meshes ? meshes : []) {
+        // repositioning mostly taken from https://mappa.js.org/docs/examples-three-js.html
+        const pos = myMap.latLngToPixel(country.gps_lat, country.gps_long);
+        const vector = new THREE.Vector3();
+        vector.set((pos.x / canvas.width) * 2 - 1, -(pos.y / canvas.height) * 2 + 1, 0.5);
+        vector.unproject(camera);
+        const dir = vector.sub(camera.position).normalize();
+        const distance = -camera.position.z / dir.z;
+        const newPos = camera.position.clone().add(dir.multiplyScalar(distance));
+        mesh.position.set(newPos.x, newPos.y, newPos.z);
+    }
+}
 
 function initMappa() {
     const key = "pk.eyJ1IjoicmljYXJkb2xhbmduZXIiLCJhIjoiY2pxano2enh2MG1qazN4bm5lajIzeDl3eiJ9.wK0MtuxLgJxDcGUksKMeKg";
@@ -75,4 +99,8 @@ function updateData(callback) {
 function animationLoop() {
     requestAnimationFrame(animationLoop);
     renderer.render(scene, camera);
+}
+
+function getSelectedAttribute() {
+    return $("#radio-group input:checked")[0].value;
 }
